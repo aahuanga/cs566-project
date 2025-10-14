@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 # ================================
 # Step 0: Load Image
 # ================================
-image = cv2.imread('clothing.jpg')
+image = cv2.imread('sample_clothing.jpg')
 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
 # Convert to HSV
