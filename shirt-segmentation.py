@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 # ================================
 # Step 0: Load Image
 # ================================
-image = cv2.imread('sample_clothing.jpg')
+image = cv2.imread('train_mini1/clothing_2.jpg')
 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
 # Convert to HSV
@@ -27,7 +27,7 @@ features = np.concatenate([
 # ================================
 # Step 2: Initialize parameters
 # ================================
-k = 4
+k = 10
 epsilon = 1.0
 max_iter = 100
 

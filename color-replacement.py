@@ -1,75 +1,187 @@
 import cv2
 import numpy as np
-from matplotlib import pyplot as plt
+import tkinter as tk
+from tkinter import ttk, filedialog, colorchooser
+from PIL import Image, ImageTk
 
 # ================================
-# SETTINGS
+# INITIAL SETTINGS
 # ================================
 input_image = 'shirt_extracted.jpg'
-output_image = 'shirt_colored.jpg'
-
-# ================================
-# Step 0: Let user choose color
-# ================================
 color_dict = {
-    'red': 0,       # hue for red
-    'yellow': 30,   # hue for yellow
-    'green': 60,    # hue for green
-    'cyan': 90,
-    'blue': 120,
-    'magenta': 150
+    'Red': (0, '#ff4d4d'),
+    'Yellow': (30, '#ffd633'),
+    'Green': (60, '#5cd65c'),
+    'Cyan': (90, '#33cccc'),
+    'Blue': (120, '#4d79ff'),
+    'Magenta': (150, '#cc33ff')
 }
 
-print("Available colors:", list(color_dict.keys()))
-chosen_color = input("Enter color name: ").strip().lower()
+# ================================
+# IMAGE LOADING AND PREPARATION
+# ================================
+shirt_img = cv2.imread(input_image)
+if shirt_img is None:
+    raise FileNotFoundError(f"Could not load image: {input_image}")
 
-if chosen_color not in color_dict:
-    print("Color not recognized! Defaulting to green.")
-    new_hue = 60
-else:
-    new_hue = color_dict[chosen_color]
+shirt_img = cv2.cvtColor(shirt_img, cv2.COLOR_BGR2RGB)
+mask = np.any(shirt_img != [0, 0, 0], axis=2)
+hsv_base = cv2.cvtColor(shirt_img, cv2.COLOR_RGB2HSV)
+
+def recolor_shirt(hue_value):
+    hsv = hsv_base.copy()
+    hsv[..., 0][mask] = hue_value
+    return cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
+
+def resize_keep_ratio(img, max_size=500):
+    h, w = img.shape[:2]
+    scale = max_size / max(h, w)
+    return cv2.resize(img, (int(w * scale), int(h * scale)))
+
+def cv_to_tk(img):
+    return ImageTk.PhotoImage(Image.fromarray(img))
 
 # ================================
-# Step 1: Load segmented shirt image
+# MAIN WINDOW SETUP
 # ================================
-shirt_only = cv2.imread(input_image)
-if shirt_only is None:
-    raise FileNotFoundError(f"Could not load {input_image}!")
-shirt_only = cv2.cvtColor(shirt_only, cv2.COLOR_BGR2RGB)
-h, w, _ = shirt_only.shape
+root = tk.Tk()
+root.title("CS566 Project: Color Replacement")
+root.geometry("1000x750")
+root.configure(bg="white")
 
-# Create mask: any non-black pixel is shirt
-mask = np.any(shirt_only != [0, 0, 0], axis=2)
+# Style configuration
+style = ttk.Style()
+style.theme_use('clam')
 
-# ================================
-# Step 2: Convert to HSV
-# ================================
-hsv_shirt = cv2.cvtColor(shirt_only, cv2.COLOR_RGB2HSV)
+# Save button styling
+style.configure(
+    "SaveButton.TButton",
+    font=("Segoe UI", 11, "bold"),
+    foreground="white",
+    background="#0078D7",
+    padding=10,
+    relief="flat"
+)
+style.map(
+    "SaveButton.TButton",
+    background=[("active", "#005A9E")]
+)
 
-# ================================
-# Step 3: Change hue only on shirt pixels
-# ================================
-hsv_shirt[..., 0][mask] = new_hue
+# Custom color button styling
+style.configure(
+    "CustomColor.TButton",
+    font=("Segoe UI", 10, "bold"),
+    foreground="#333",
+    background="#f0f0f0",
+    padding=8,
+    borderwidth=0
+)
+style.map(
+    "CustomColor.TButton",
+    background=[("active", "#d9d9d9")]
+)
 
-# Convert back to RGB
-shirt_colored = cv2.cvtColor(hsv_shirt, cv2.COLOR_HSV2RGB)
+# Layout
+root.grid_rowconfigure(1, weight=1)
+root.grid_columnconfigure(0, weight=1)
 
-# ================================
-# Step 4: Save and display
-# ================================
-cv2.imwrite(output_image, cv2.cvtColor(shirt_colored, cv2.COLOR_RGB2BGR))
-print(f"Saved colored shirt image as: {output_image}")
+# Header
+header = tk.Frame(root, bg="#f8f8f8", height=70)
+header.grid(row=0, column=0, sticky="ew")
+tk.Label(
+    header, text="CS566 Project: Color Replacement",
+    font=("Helvetica", 22, "bold"), bg="#f8f8f8", fg="#333"
+).pack(pady=15)
 
-# Display results
-plt.figure(figsize=(10,5))
-plt.subplot(1,2,1)
-plt.title("Segmented Shirt")
-plt.imshow(shirt_only)
-plt.axis('off')
+# Main content
+main_frame = tk.Frame(root, bg="white")
+main_frame.grid(row=1, column=0, sticky="nsew")
 
-plt.subplot(1,2,2)
-plt.title(f"Shirt Colored ({chosen_color})")
-plt.imshow(shirt_colored)
-plt.axis('off')
+display_img = resize_keep_ratio(shirt_img)
+tk_img = cv_to_tk(display_img)
+img_label = tk.Label(main_frame, image=tk_img, bg="white")
+img_label.pack(pady=30)
 
-plt.show()
+# Color swatches
+swatch_frame = tk.Frame(main_frame, bg="white")
+swatch_frame.pack(pady=15)
+
+selected_color = tk.StringVar(value="Original")
+
+def show_color(color_name):
+    hue, hex_color = color_dict[color_name]
+    recolored = recolor_shirt(hue)
+    resized = resize_keep_ratio(recolored)
+    tk_new = cv_to_tk(resized)
+    img_label.configure(image=tk_new)
+    img_label.image = tk_new
+    selected_color.set(color_name)
+    color_label.config(bg=hex_color)
+
+def make_circle(canvas, color):
+    r = 22
+    canvas.create_oval(2, 2, 2*r, 2*r, fill=color, outline=color)
+
+for name, (hue, hex_color) in color_dict.items():
+    c = tk.Canvas(swatch_frame, width=50, height=50, bg="white", highlightthickness=0)
+    make_circle(c, hex_color)
+    c.bind("<Button-1>", lambda e, n=name: show_color(n))
+    c.pack(side="left", padx=8)
+
+# Custom color picker
+# def pick_custom_color():
+#     color = colorchooser.askcolor(title="Choose a custom color")
+#     if not color[0]:
+#         return
+#     r, g, b = color[0]
+#     rgb = np.uint8([[[r, g, b]]])
+#     hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
+#     hue_value = hsv[0][0][0]
+#     recolored = recolor_shirt(hue_value)
+#     resized = resize_keep_ratio(recolored)
+#     tk_new = cv_to_tk(resized)
+#     img_label.configure(image=tk_new)
+#     img_label.image = tk_new
+#     selected_color.set("Custom")
+#     color_label.config(bg=color[1])
+
+# ttk.Button(
+#     swatch_frame,
+#     text="Custom Color",
+#     command=pick_custom_color,
+#     style="CustomColor.TButton"
+# ).pack(side="left", padx=12)
+
+# Footer
+footer = tk.Frame(root, bg="#f2f2f2", height=60)
+footer.grid(row=2, column=0, sticky="ew")
+footer.grid_propagate(False)
+
+footer_inner = tk.Frame(footer, bg="#f2f2f2")
+footer_inner.pack(expand=True)
+
+color_label = tk.Label(
+    footer_inner, textvariable=selected_color,
+    font=("Arial", 16, "bold"), fg="#333", bg="#f2f2f2", width=12
+)
+color_label.pack(side="left", padx=10)
+
+# Save image function
+def save_image():
+    file_path = filedialog.asksaveasfilename(
+        defaultextension=".jpg",
+        filetypes=[("JPEG", "*.jpg"), ("PNG", "*.png")]
+    )
+    if file_path:
+        hue, _ = color_dict.get(selected_color.get(), (60, ''))
+        recolored = recolor_shirt(hue)
+        cv2.imwrite(file_path, cv2.cvtColor(recolored, cv2.COLOR_RGB2BGR))
+
+ttk.Button(
+    footer_inner,
+    text="Save Image",
+    command=save_image,
+    style="SaveButton.TButton"
+).pack(side="left", padx=10)
+
+root.mainloop()
