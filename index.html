@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,35 +12,91 @@
             padding: 20px;
             text-align: center;
         }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             text-align: center;
         }
+
         .text-body {
             text-align: left;
         }
+
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        .gallery .item {
+            max-width: 220px;
+            text-align: center;
+            font-size: 13px;
+            color: #444;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            display: block;
+            background: #f6f6f6;
+        }
+
+        .video-embed {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            margin: 12px auto;
+            padding-bottom: 60%;
+            height: 0;
+            overflow: hidden;
+        }
+
+        .video-embed iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1>CS566 Project: Shirt Segmentation and Color Replacement</h1>
+        <h1>CS566 Project: Retail Color Picker</h1>
         <h4>Anna Huang, Mia Patil, David Huang</h4>
 
         <div class="problem-statement">
             <h3>1. Problem Statement + Motivation</h3>
             <p class="text-body">Color psychology plays a major role in a customer’s decision to purchase a product.
-                The Amazon Product Color Guide states that “90% of snap judgments about products are based on color alone, 
-                especially in the context of branding and product design.” With major clothing retailers like Amazon, Walmart, and 
-                Etsy capitalizing on the growing online market, color is a significant factor in how customers perceive a product, 
-                especially when they cannot physically try on or touch the clothes. Despite the growth of the industry, 
-                online sales still account for a minority of total retail purchases. According to the U.S. Census Bureau, in the first 
-                two months of 2025, online sales made approximately 20% of total retail purchases, while in-person sales accounted for 
-                the remaining 80%. A key limiting factor is the lack of individualized shopping experiences. Customers and businesses 
-                need a tool that can tailor the online shopping experience. We propose a color analysis application that allows users to 
-                change the colors of the clothes a person is wearing in an image. This will enable better visualization of clothing and 
-                showcase how products look on an actual person. From a seller’s perspective, the tool allows for more efficient marketing 
-                without costly, time-consuming photoshoots. From a customer’s perspective, it helps guide purchasing decisions by 
+                The Amazon Product Color Guide states that “90% of snap judgments about products are based on color
+                alone,
+                especially in the context of branding and product design.” With major clothing retailers like Amazon,
+                Walmart, and
+                Etsy capitalizing on the growing online market, color is a significant factor in how customers perceive
+                a product,
+                especially when they cannot physically try on or touch the clothes. Despite the growth of the industry,
+                online sales still account for a minority of total retail purchases. According to the U.S. Census
+                Bureau, in the first
+                two months of 2025, online sales made approximately 20% of total retail purchases, while in-person sales
+                accounted for
+                the remaining 80%. A key limiting factor is the lack of individualized shopping experiences. Customers
+                and businesses
+                need a tool that can tailor the online shopping experience. We propose a color replacement application
+                that allows users to
+                change the colors of the clothes a person is wearing in an image. This will enable better visualization
+                of clothing and
+                showcase how products look on an actual person. From a seller’s perspective, the tool allows for more
+                efficient marketing
+                without costly, time-consuming photoshoots. From a customer’s perspective, it helps guide purchasing
+                decisions by
                 visualizing how the product looks on a person in a variety of colors.
             </p>
         </div>
@@ -47,63 +104,203 @@
         <div class="approach">
             <h3>2. Approach</h3>
             <h4>Shirt Detection and Segmentation</h4>
-                <p class="text-body">To detect the shirt and implement segmentation, we will follow the method as described in Hilsmann and Eisert’s research paper. This consists of taking all the pixels within a picture and normalizing them based on the intensity of the lighting which removes brightness as a factor. For example, if a t-shirt has shadows or inconsistent illumination, then the normalization process allows for easier segmentation. Then, an algorithm will take the largest cluster of standardized pixel values, identifying it as the shirt. This is dependent upon the shirt being the “primary” object within the picture as otherwise, it would be too difficult to determine which blobs make up the shirt. Once the t-shirt region is discovered, we will then have a binary mask allowing for future processing.</p>
+            <p class="text-body">To detect the shirt and implement segmentation, we will follow the method as described
+                in Hilsmann and Eisert’s research paper. This consists of taking all the pixels within a picture and
+                normalizing them based on the intensity of the lighting which removes brightness as a factor. For
+                example, if a t-shirt has shadows or inconsistent illumination, then the normalization process allows
+                for easier segmentation. Then, an algorithm will take the largest cluster of standardized pixel values,
+                identifying it as the shirt. This is dependent upon the shirt being the “primary” object within the
+                picture as otherwise, it would be too difficult to determine which blobs make up the shirt. Once the
+                t-shirt region is discovered, we will then have a binary mask allowing for future processing.</p>
             <h4>Color Detection & Transformation</h4>
-                <p class="text-body">We want to change the color of the shirt while preserving texture and shading in the image. By transforming the image pixels to HSV (hue, saturation, value) color space, we can modify the hue (color) independently from brightness and intensity. This allows us to replace the hue within the clothing region to the specific color of choice without impacting shaded and textured areas in the image. We can also adjust saturation and value to look more natural.</p>
-            <h4>Color Analysis</h4>
-                <p class="text-body">The user will be able to preview the clothing in a variety of colors. This will help them visually analyze which color they prefer. We also aim to algorithmically identify which color suits the image individual the most based on factors such as skin tone, warm/cool undertones, and more. </p>
+            <p class="text-body">We want to change the color of the shirt while preserving texture and shading in the
+                image. By transforming the image pixels to HSV (hue, saturation, value) color space, we can modify the
+                hue (color) independently from brightness and intensity. This allows us to replace the hue within the
+                clothing region to the specific color of choice without impacting shaded and textured areas in the
+                image. We can also adjust saturation and value to look more natural.</p>
+
+
         </div>
 
         <div class="implementation">
             <h3>3. Implementation</h3>
-                <h4>Segmentation Algorithm</h4>
-                    <p class="text-body">
-                        We considered a variety of different algorithms to determine the segmentation of the shirt from the rest of the image. 
-                        These included some such as K-Means Clustering, Graph Cut, and Meanshift Segmentation. Ultimately, we decided to implement the K-Means 
-                        algorithm for its balance of high efficiency and accuracy comparable to the others. To further increase accuracy, we utilized a GrabCut to "bind"
-                        the segmentation to the shirt area more tightly. 
-                    </p>
-                <h4>Color Replacement</h4>
-                    <p class="text-body">
-                        A color replacement interface is in initial development to let users interactively change the colors of segmented shirt images. In future updates, color changes will be applied directly on the full image, not just the image of the extracted shirt segment. The GUI enables users to select from predefined color swatches. To preserve the underlying texture and shading of the segmented regions, the recoloring process is performed in the HSV color space, where only the hue channel is modified while the saturation and value channels remain unchanged. The interface updates the displayed image in real time, allowing users to experiment with different colors efficiently.
-                    </p>
+            <h4>Segmentation Algorithm</h4>
+            <p class="text-body">We considered a variety of different algorithms to determine the segmentation of the
+                shirt from the rest of the image. These included some such as K-Means Clustering, Graph Cut, and
+                Meanshift Segmentation. Ultimately, we decided to implement the K-Means
+                algorithm for its balance of high efficiency and accuracy comparable to the others. To further increase
+                accuracy, we utilized a GrabCut to "bind"
+                the segmentation to the shirt area more tightly.
+            </p>
+
+            <div class="gallery" aria-label="Approach - shirt detection examples">
+                <div class="item">
+                    <img src="website_photos/k-means.png">
+                </div>
+                <div class="item">
+                    <img src="website_photos/grab-cut.png">
+                </div>
+            </div>
+
+            <h4>Implementation results</h4>
+            <div class="gallery" aria-label="Implementation segmentation results">
+                <div class="item">
+                    <img src="website_photos/GrabCut_Result.png">
+                </div>
+                <div class="item">
+                    <img src="website_photos/KMeans_Result.png">
+                </div>
+                <div class="item">
+                    <img src="website_photos/Meanshift_Result.png">
+                </div>
+            </div>
+
+            <h4>Color Replacement</h4>
+            <p class="text-body">
+                A color replacement interface is in initial development to let users interactively change the colors of
+                segmented shirt images. In future updates, color changes will be applied directly on the full image, not
+                just the image of the extracted shirt segment. The GUI enables users to select from predefined color
+                swatches. To preserve the underlying texture and shading of the segmented regions, the recoloring
+                process is performed in the HSV color space, where only the hue channel is modified while the saturation
+                and value channels remain unchanged. The interface updates the displayed image in real time, allowing
+                users to experiment with different colors efficiently.
+            </p>
+            <div class="gallery" aria-label="Approach - color detection example">
+                <div class="item">
+                    <img src="website_photos/HSV.png">
+                </div>
+            </div>
         </div>
 
         <div class="results">
             <h3>4. Results & Problems Encountered</h3>
+
+            <h4>Results</h4>
+            <div class="video-embed">
+                <iframe src="https://drive.google.com/file/d/14N1xdVQlSg0VUowMlgTgEulK8GfFJOUt/preview"
+                    allow="autoplay"></iframe>
+            </div>
+            <p class="text-body">
+                Here is a sample color replacement performed on the VITON‑HD dataset. The first image is the original
+                image, and the following images are color replaced with green, blue, and teal colors. This is an example
+                of a successful color replacement: the clothing mask is correctly limited to the clothing area, the
+                color replacement did not impact the background or the model, and the texture and shadow within the
+                clothing were preserved. White striping and logos were also preserved because the algorithm detected
+                those designs as distinct from the main color area.
+            </p>
+
+            <div class="gallery" aria-label="Results examples">
+                <div class="item">
+                    <img src="website_photos/blue_adidas.png">
+                </div>
+                <div class="item">
+                    <img src="website_photos/green_adidas.png">
+                </div>
+                <div class="item">
+                    <img src="website_photos/pink_adidas.jpg">
+                </div>
+                <div class="item">
+                    <img src="website_photos/purple_adidas.png">
+                </div>
+            </div>
+
+
+            <h4 style="margin-top:18px;">Problems Encountered</h4>
+            <p class="text-body">
+                We encountered several issues during segmentation. The algorithm can struggle when the shirt is
+                off-center in the frame or when the garment has large graphics or logos that form their own color or
+                texture clusters. High-resolution images also slow down processing and increase memory usage, which
+                makes interactive recoloring less responsive. These challenges were reflected in three common failure
+                cases we observed: incomplete shirt masks that lead to incorrect recoloring; masks that accidentally
+                include facial regions, causing color spill onto skin; and noisy regions near the hair or arms where
+                non-shirt pixels are incorrectly captured.
+            </p>
+            <div class="gallery" aria-label="Problems examples">
+                <div class="item">
+                    <img src="website_photos/challenge_1.jpg">
+                </div>
+                <div class="item">
+                    <img src="website_photos/challenge_2.jpg">
+                </div>
+                <div class="item">
+                    <img src="website_photos/challenge_3.jpg">
+                </div>
+            </div>
         </div>
 
         <div class="future-work">
             <h3>5. Future Work</h3>
-                <p class="text-body">
-                    In the future, any further work done on this should focus on first creating accurate segmentations even under adverse conditions (such as non-optimal backgrounds). 
-                    Additionally, it would be helpful to have a proper way of evaluating results quantitatively to ensure the results generated are truly accurate and represent a 
-                    valid color transformation for articles of clothing. 
-                </p>
+            <p class="text-body">
+                In the future, work should focus on improving segmentation robustness for adverse conditions (such as
+                non-optimal backgrounds), handling off-center shirts and garments with large graphics/logos that
+                currently confuse clustering, and optimizing performance for high-resolution images so the tool remains
+                responsive. Additionally, it would be helpful to have a proper way of evaluating results quantitatively
+                to ensure the results generated are truly accurate and represent a valid color transformation for
+                articles of clothing.
+            </p>
         </div>
 
         <div class="links">
             <h3>6. Links</h3>
-                <p class="text-body">Insert link for project slides here.</p>
-            <a href="https://github.com/aahuanga/cs566-project"><p class="text-body">Code Repository</p></a>
+            <a href="https://docs.google.com/presentation/d/11xKAWopGBBeqIQ_F9Eqihy5mOKVR-idMPXPTv7aKJAc/edit?usp=sharing"
+                target="_blank" rel="noopener">
+                <p class="text-body">Project Slides</p>
+            </a>
+            <a href="https://github.com/aahuanga/cs566-project">
+                <p class="text-body">Code Repository</p>
+            </a>
         </div>
 
         <div class="references">
             <h3>7. References</h3>
-                <p class="text-body">
-                    [1] Hilsmann, A., & Eisert, P. (2016). Shirt Color Detection and Replacement in Images and Videos. 
-                    In 2016 IEEE International Conference on Image Processing (ICIP) (pp. 3522-3526). IEEE. 
-                    https://doi.org/10.1109/ICIP.2016.7533032
-                </p>
-                <p class="text-body">
-                    [2] Amazon Product Color Guide. (n.d.). Retrieved from 
-                    https://sell.amazon.com/pricing-fees/amazon-product-color-guide
-                </p>
-                <p class="text-body">
-                    [3] U.S. Census Bureau. (2025). Quarterly Retail E-Commerce Sales 1st Quarter 2025. Retrieved from 
-                    https://www.census.gov/retail/mrts/www/data/pdf/ec_current.pdf
-                </p>
+            <p class="text-body">
+                [1] Göring‑Fröhlich, J., & Fröhlich, B. (2019). Semantic segmentation using GrabCut [Figure 0]. In
+                Semantic Scholar.
+                https://www.semanticscholar.org/paper/Semantic-Segmentation-using-GrabCut-Göring-Fröhlich/c2918cf336061a6ea27ecf6a414de0f53575d96c/
+            </p>
+            <p class="text-body">
+                [2] Leadcia. (2023, January 9). Computer vision [Video]. YouTube. Screenshot from the video:
+                https://www.youtube.com/watch?v=g16GEhJXr4U
+            </p>
+            <p class="text-body">
+                [3] AMZScout. (2025, August 14). Amazon Product Color Guide: What color attracts customers to buy.
+                Retrieved from
+                https://amzscout.net/blog/what-color-makes-people-want-to-buy/#:~:text=Research%20shows%20that%20up%20to,are%20influenced%20by%20various%20colors
+            </p>
+            <p class="text-body">
+                [4] U.S. Census Bureau. (2025, August 19). Quarterly Retail E-Commerce Sales Report. Retrieved from
+                https://www.census.gov/retail/ecommerce.html
+            </p>
+            <p class="text-body">
+                [5] Hilsmann, A., & Eisert, P. (2016). Shirt Color Detection and Replacement in Images and Videos.
+                In 2016 IEEE International Conference on Image Processing (ICIP) (pp. 3522-3526). IEEE.
+                https://doi.org/10.1109/ICIP.2016.7533032
+            </p>
+            <p class="text-body">
+                [6] Hilsmann, A., & Eisert, P. (2009). Tracking and Retexturing Cloth for Real-Time Virtual Clothing
+                Applications.
+                Lecture Notes in Computer Science. Retrieved from
+                https://www.researchgate.net/publication/221055051_Tracking_and_Retexturing_Cloth_for_Real_Time_Virtual_Clothing_Applications
+            </p>
+            <p class="text-body">
+                [7] Alyoubi, R., Alharbi, T., Alghamdi, A., Alshehri, Y., & Alghamdi, E. (2025). COLORS MATTER:
+                AI-Driven Exploration of Human Feature Colors (preprint). arXiv.
+                Retrieved from https://arxiv.org/pdf/2505.14931
+            </p>
+            <p class="text-body">
+                [8] iMaterialist Fashion 2021 (FGVC8) (Competition dataset) iMaterialist Fashion 2021 FGVC8. (n.d.).
+                Kaggle.
+                Retrieved November 16, 2025, from
+                https://www.kaggle.com/competitions/imaterialist-fashion-2021-fgvc8/data
+            </p>
+            <p class="text-body">
+                [9] High‑Resolution VITON Zalando Dataset marquis03. (n.d.). VITON‑HD: High‑Resolution VITON Zalando
+                Dataset [Data set]. Kaggle.
+                Retrieved November 16, 2025, from
+                https://www.kaggle.com/datasets/marquis03/high-resolution-viton-zalando-dataset
+            </p>
         </div>
     </div>
 </body>
+
 </html>
