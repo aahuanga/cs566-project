@@ -7,10 +7,11 @@
     <title>Shirt Segmentation Project</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: Tahoma, sans-serif;
             margin: 0;
             padding: 20px;
             text-align: center;
+            line-height: 1.7;
         }
 
         .container {
@@ -21,6 +22,15 @@
 
         .text-body {
             text-align: left;
+            line-height: 1.8;
+            color: #444; 
+        }
+
+        .problem-statement h4 + .text-body {
+            background: #f0f8ff;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
         }
 
         .gallery {
@@ -65,6 +75,22 @@
             height: 100%;
             border: 0;
         }
+
+        .links a {
+            display: inline-block;
+            background: #9ec6e1;
+            color: white;
+            text-decoration: none;
+            padding: 12px 25px;
+            margin: 10px 10px 0 0;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+
+        .links a:hover {
+            background: #2980b9;
+        }
     </style>
 </head>
 
@@ -98,6 +124,15 @@
                 without costly, time-consuming photoshoots. From a customer’s perspective, it helps guide purchasing
                 decisions by
                 visualizing how the product looks on a person in a variety of colors.
+            </p>
+
+            <h4>Current Market</h4>
+            <p class="text-body">Traditional retail solutions for garment color visualization either rely on photographing each color 
+                garment separately (most common solution but time and resource intensive) or use large-scale AI models that require extensive datasets of manually created clothing masks to train them. 
+                Each garment must be precisely segmented and labeled which creates an overhead in human labor as well as computational power. Our tool uses standard computer vision techniques
+                to automatically mask and recolor clothes without much processing power and no manual work. Our tool also includes a GUI for the user to 
+                test out different colors themselves, allowing both end consumers and retailers to experiment with color changes in real time. This level of 
+                flexibility and accessability is not commonly available in existing solutions.
             </p>
         </div>
 
