@@ -47,6 +47,14 @@
             background: #f6f6f6;
         }
 
+       .mean-shift-img img {
+           max-width: 640px;   /* maximum width on large screens */
+           width: 100%;        /* scale down on smaller screens */
+           height: auto;
+           display: block;
+           margin: 0 auto;     
+       }
+
         .video-embed {
             position: relative;
             width: 100%;
@@ -124,14 +132,58 @@
 
         <div class="implementation">
             <h3>3. Implementation</h3>
-            <h4>Segmentation Algorithm</h4>
             <p class="text-body">We considered a variety of different algorithms to determine the segmentation of the
-                shirt from the rest of the image. These included some such as K-Means Clustering, Graph Cut, and
-                Meanshift Segmentation. Ultimately, we decided to implement the K-Means
+                shirt from the rest of the image. These included K-Means Clustering, Graph Cut, and
+                Meanshift Segmentation.
+            </p>
+
+            <p><strong>K-Means</strong></p>
+            <p class="text-body">
+                The k-means clustering segmentation algorithm produced results the fastest 
+                while maintaining comparable accuracy to the other methods. However, it 
+                faced similar challenges due to the complexity of the images, such as 
+                difficulty in distinguishing regions with subtle color or texture differences. 
+            </p>
+            <div class="item">
+                <img src="website_photos/KMeans_Result.png">
+            </div>
+
+            <p><strong>Graph Cut</strong></p>
+            <p class="text-body">
+                The graph cut algorithm implementation produced a relatively accurate shirt mask 
+                for the majority of pictures. Defining a bounding rectangle 
+                (where the shirt is most likely to be) in the middle of the image 
+                provided better results when the shirt actually is 
+                positioned within. However, if not, it can lead to portions of the shirt 
+                being completely cut off overall. Additionally, for 
+                shirts with graphic designs (e.g. a large logo), it 
+                also struggled to recognize it as part of the shirt overall. 
+            </p>
+            <div class="item">
+                <img src="website_photos/GrabCut_Result.png">
+            </div>
+
+            <p><strong>Meanshift</strong></p>
+            <p class="text-body">
+                The mean shift segmentation algorithm worked on simpler 
+                images but struggled with complex images that have detailed textures and 
+                gradual color changes. A key challenge has been selecting appropriate 
+                parameter values, such as the window radius (which controls color similarity), 
+                the spatial window (used for averaging the pixel neighborhood), and 
+                epsilon (the convergence threshold). The algorithm is sensitive to these 
+                parameters, leading to inconsistent results, and it could also be slow on 
+                high-resolution images.
+            </p>
+            <div class="item mean-shift-img">
+                <img src="website_photos/Meanshift_Result.png">
+            </div>
+
+            <h4>Segmentation Algorithm</h4>
+            <p class="text-body">
+                Ultimately, we decided to implement the K-Means
                 algorithm for its balance of high efficiency and accuracy comparable to the others. To further increase
                 accuracy, we utilized a GrabCut to "bind"
                 the segmentation to the shirt area more tightly.
-            </p>
 
             <div class="gallery" aria-label="Approach - shirt detection examples">
                 <div class="item">
@@ -139,19 +191,6 @@
                 </div>
                 <div class="item">
                     <img src="website_photos/grab-cut.png">
-                </div>
-            </div>
-
-            <h4>Implementation results</h4>
-            <div class="gallery" aria-label="Implementation segmentation results">
-                <div class="item">
-                    <img src="website_photos/GrabCut_Result.png">
-                </div>
-                <div class="item">
-                    <img src="website_photos/KMeans_Result.png">
-                </div>
-                <div class="item">
-                    <img src="website_photos/Meanshift_Result.png">
                 </div>
             </div>
 
