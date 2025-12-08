@@ -213,12 +213,13 @@
                 <img src="website_photos/MeanShift_Result.png">
             </div>
 
-            <h4>Segmentation Algorithm</h4>
+            <h4>Final Segmentation Algorithm: K-Means + Grabcut </h4>
             <p class="text-body">
                 Ultimately, we decided to implement the K-Means
-                algorithm for its balance of high efficiency and accuracy comparable to the others. To further increase
-                accuracy, we utilized a GrabCut to "bind"
-                the segmentation to the shirt area more tightly.
+                algorithm for its balance of high efficiency and accuracy comparable to the others. To further refine the resulting mask,
+                we used GrabCut to "bind" the segmentation to the shirt area more tightly. Grabcut achieves this by iteratively fitting Gaussian Mixture Models 
+                (GMMs) to the probable foreground and background colors and using Graph Cut to find the optimal, most probable boundary based 
+                on color and boundary smoothness. 
 
             <div class="gallery" aria-label="Approach - shirt detection examples">
                 <div class="item">
@@ -231,12 +232,11 @@
 
             <h4>Color Replacement</h4>
             <p class="text-body">
-                A color replacement interface is in initial development to let users interactively change the colors of
-                segmented shirt images. In future updates, color changes will be applied directly on the full image, not
-                just the image of the extracted shirt segment. The GUI enables users to select from predefined color
-                swatches. To preserve the underlying texture and shading of the segmented regions, the recoloring
+                Our color replacement GUI enables users to select from predefined color swatches as well as a custom color picker. 
+                To preserve the underlying texture and shading of the segmented regions, the recoloring
                 process is performed in the HSV color space, where only the hue channel is modified while the saturation
-                and value channels remain unchanged. The interface updates the displayed image in real time, allowing
+                and value channels remain unchanged. The color replacement is performed on the segmentation mask, then overlayed onto the 
+                original image. The interface updates the displayed image in real time, allowing
                 users to experiment with different colors efficiently.
             </p>
             <div class="gallery" aria-label="Approach - color detection example">
